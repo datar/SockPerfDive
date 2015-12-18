@@ -26,4 +26,7 @@ get system timestamp and transfer it to a strct timespec. return this struct.
 #### `os_gettimeofclock()`
 transfer a timespec struct to nanosecond count
 
-** I don't know why they need these two functions `os_gettimeofclock()` and `os_ts_gettimeofclock()`. These functions just do what os_gettimeoftsc() does.**
+**I don't know why they need these two functions `os_gettimeofclock()` and `os_ts_gettimeofclock()`. These functions just do what os_gettimeoftsc() does.**
+
+
+### ticks.h
