@@ -3,6 +3,30 @@ SockPerf Note
 
 ## Code
 
+### Defs.h
+Constants and many magic numbers.
+
+### SockPerf.cpp
+
+This is the entry of sockperf. There are more than 3000 lines in this file. The `main()` function is too long. That's ridiclouce. 
+
+The first parameter after sockperf is **mode** like pingpong server. Each mode has its function, like this
+```
+static int proc_mode_help( int, int, const char ** );
+static int proc_mode_version( int, int, const char ** );
+static int proc_mode_under_load( int, int, const char ** );
+static int proc_mode_ping_pong( int, int, const char ** );
+static int proc_mode_throughput( int, int, const char ** );
+static int proc_mode_playback( int, int, const char ** );
+static int proc_mode_server( int, int, const char ** );
+```
+
+The cmdline `sockperf server` will go into `function proc_mode_server()`. A struct `app_modes` was used to store modes' name, shortname, function. 
+
+The most interest thing is how they project mode name to function. They use a C-style array of struct `app_mode`. And how they check the end of array? They and a magic item whose all memebers are Null. They traversal the array util they get a wholl Null member struct. Sound like they use the C-style string. But why they didn't use some high level data structure like map? They use OOD in many classes.   
+
+
+
 ### ticks_os.h
 Improving the function in ticks.h in windows system. using `QueryPerformanceFrequency()` and `QueryPerformanceCounter()` for max accuracy.
 
