@@ -21,7 +21,7 @@ def save_result_to_file(result, target):
 
 
 def transfer_result_from_file(source, target):
-    with open(source) as infile, open(target) as outfile:
+    with open(source) as infile, open(target, 'w') as outfile:
         summary = []
         for line_index in range(SOCKPERF_LOG_SUMMARY_LINE_NUMBER):
             summary.append(infile.readline().rstrip())
