@@ -40,7 +40,7 @@ def transfer_result_from_file(source, target):
             tx = int(tx_text)
             if first_tx == 0:
                 first_tx = tx
-            outfile.write("%d,%d\n" % (tx-first_tx, tx-last_rx_time, rx-tx))
+            outfile.write("%d,%d,%d\n" % (tx-first_tx, tx-last_rx_time, rx-tx))
             last_rx_time = rx
     infile.close()
     outfile.close()
