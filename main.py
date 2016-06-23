@@ -1,9 +1,10 @@
 import os
+import os.path
 import re
 import result_parsor
 
 
-source_dir_uri = 'Z:\\Analysis\\20160302112700\\'
+source_dir_uri = 'Z:\\Analysis\\20160622_LL\\'
 
 
 target_dir = 'Z:\\Analysis\\'
@@ -37,35 +38,39 @@ def generate_test_id_from_str(content):
     return re.search('\d{14}', content).group(0)
 
 
-def save_file_result(result, result_id):
+def save_file_result(result, result_id, test_id):
     target_content, summary = generate_result_list(result, result_id)
-    f = open(result_id+'.csv', 'w')
+    f = open(os.path.join(target_dir, result_id, '.csv'), 'w')
     f.write(target_content)
     f.close()
 
-    test_id = generate_test_id_from_str(result_id)
-    s = open(target_dir+test_id+'.csv', 'a')
+    s = open(target_dir+test_id+'_summary.csv', 'a')
     s.write(summary)
     s.write(os.linesep)
     s.close()
 
 
-def get_result_from_file(filename):
+def get_result_from_file(filename, result_id=None):
     try:
         content = open(filename).read()
         result = result_parsor.result_file_parse(content)
     except IOError as e:
         print "I/O error({0}): {1}: {2}".format(e.errno, e.strerror, filename)
         return
-    result_id = generate_sample_id_from_filename(filename)
-    save_file_result(result, result_id)
+    if result_id is None:
+        result_id = generate_sample_id_from_filename(filename)
+        test_id = generate_test_id_from_str(result_id)
+    else:
+        test_id = result_id
+    save_file_result(result, result_id, test_id)
     return 0
 
 
 def main():
     filenames = get_result_file_list(source_dir_uri)
     for filename in filenames:
-        get_result_from_file(filename)
+        result_id = '20160622_'+os.path.splitext(os.path.basename(filename))[0]
+        get_result_from_file(filename, result_id)
 
 
 if __name__ == '__main__':
