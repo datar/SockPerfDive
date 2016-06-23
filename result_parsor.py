@@ -55,7 +55,3 @@ def result_file_parse(file_content):
     latency = [x[2]/2 for x in times]
     #stat = first_step_analysis(latency)
     return parameters, times, None
-
-
-
-
