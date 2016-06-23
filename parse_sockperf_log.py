@@ -27,14 +27,18 @@ def transfer_result_from_file(source, target):
             summary.append(infile.readline().rstrip())
 
         last_rx_time = 0
+
+        # output file has header line
+        outfile.write('in, net\n')
         for line in infile:
             if line.startswith(SOCKPERF_LOG_SECTION_SEP_BEGIN):
                 break
             (rx_text, tx_text) = line.replace('.', '').strip('\n').split(',')
             rx = int(rx_text)
             tx = int(tx_text)
-
-            outfile.write("%d,%d\n" % (tx-rx, tx - last_rx_time))
+            # The first inner latency in output file is first tx time
+            outfile.write("%d,%d\n" % (tx-last_rx_time, tx-rx))
+            last_rx_time = rx
     infile.close()
     outfile.close()
     return 0
