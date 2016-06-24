@@ -28,7 +28,7 @@ def transfer_result_from_file(source, target):
 
 
         # output file has header line
-        outfile.write('tx,in,net\n')
+        outfile.write('tx,inner,net\n')
         last_rx_time = 0
         first_tx = 0
 
