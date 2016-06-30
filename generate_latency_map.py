@@ -2,6 +2,8 @@ import sys
 import csv
 
 LATENCY_DATA_HEADER = 'tx,inner,net'
+IN_LATENCY_DATA_HEADER = 'inner'
+NET_LATENCY_DATA_HEADER = 'net'
 INNER_HEADER = 'latency_in'
 NET_HEADER = 'latency_net'
 COUNT_HEADER = 'count'
@@ -24,13 +26,13 @@ def transfer_latency_to_map(source, inner_latency_file, network_latency_file):
     with open(inner_latency_file, 'wb') as outfile_in_lat, open(network_latency_file,'wb') as outfile_net_lat:
         data_in_writer = csv.writer(outfile_in_lat, quoting=csv.QUOTE_NONE)
         data_in_writer.writerow([INNER_HEADER, COUNT_HEADER])
-        in_lat_map.pop(INNER_HEADER, None)
+        in_lat_map.pop(IN_LATENCY_DATA_HEADER, None)
         for k in in_lat_map.keys():
             data_in_writer.writerow([k, in_lat_map[k]])
 
         data_net_writer = csv.writer(outfile_net_lat, quoting=csv.QUOTE_NONE)
         data_net_writer.writerow([NET_HEADER, COUNT_HEADER])
-        net_lat_map.pop(NET_HEADER, None)
+        net_lat_map.pop(NET_LATENCY_DATA_HEADER, None)
         for k in net_lat_map.keys():
             data_net_writer.writerow([k, net_lat_map[k]])
     return 0
