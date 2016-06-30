@@ -15,8 +15,8 @@ def latency2map(source, dest):
         if extname.upper() != '.CSV':
             continue
         source_name = os.path.join(source, filename)
-        dest_in_name = os.path.join(dest, basename, '_InLatMap', extname)
-        dest_net_name = os.path.join(dest, basename, '_NetLatMap', extname)
+        dest_in_name = os.path.join(dest, basename + '_InLatMap', extname)
+        dest_net_name = os.path.join(dest, basename + '_NetLatMap', extname)
         source2dest.append(' '.join(['python generate_latency_map.py', source_name, dest_in_name, dest_net_name, os.linesep]))
     with open('latency2map.sh', 'w') as outfile:
         outfile.writelines(source2dest)
