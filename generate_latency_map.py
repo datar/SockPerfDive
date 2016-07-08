@@ -1,3 +1,4 @@
+import os.path
 import sys
 import csv
 
@@ -25,7 +26,7 @@ def transfer_latency_to_map(source, inner_latency_file, network_latency_file):
             in_lat_map[row[1]] = in_lat_map.get(row[1], 0) + 1
             net_lat_map[row[2]] = net_lat_map.get(row[2], 0) + 1
 
-    with open(inner_latency_file, 'wb') as outfile_in_lat, open(network_latency_file,'wb') as outfile_net_lat:
+    with open(inner_latency_file, 'wb') as outfile_in_lat, open(network_latency_file, 'wb') as outfile_net_lat:
         data_in_writer = csv.writer(outfile_in_lat, quoting=csv.QUOTE_NONE)
         data_in_writer.writerow([INNER_HEADER, COUNT_HEADER])
         in_lat_map.pop(IN_LATENCY_DATA_HEADER, None)
@@ -47,7 +48,18 @@ def main():
     source_file = sys.argv[1]
     inner_latency_file = sys.argv[2]
     network_latency_file = sys.argv[3]
-    transfer_latency_to_map(source_file, inner_latency_file, network_latency_file)
+
+    source_file = os.path.normpath(source_file)
+    inner_latency_file = os.path.normpath(inner_latency_file)
+    if os.path.isfile(source_file):
+        transfer_latency_to_map(source_file, inner_latency_file, network_latency_file)
+    else:
+        filenames = os.listdir(source_file)
+        for filename in filenames:
+            source = os.path.join(source_file, filename)
+            target_in = os.path.join(inner_latency_file, filename)
+            target_net = os.path.join(network_latency_file, filename)
+            transfer_latency_to_map(source, target_in, target_net)
 
 
 if __name__ == '__main__':
