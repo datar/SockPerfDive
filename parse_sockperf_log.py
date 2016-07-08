@@ -51,7 +51,17 @@ def transfer_result_from_file(source, target):
 def main():
     source_file = sys.argv[1]
     target_file = sys.argv[2]
-    transfer_result_from_file(source_file, target_file)
+    if os.path.isdir(source_file):
+        filenames = os.listdir(source_file)
+    else:
+        filenames = [source_file]
+    for filename in filenames:
+        (basename, extname) = os.path.splitext(filename)
+        if extname.upper() != '.CSV':
+            continue
+        source_name = os.path.join(source_file, filename)
+        target_name = os.path.join(target_file, filename)
+        transfer_result_from_file(source_name, target_name)
 
 
 if __name__ == '__main__':
