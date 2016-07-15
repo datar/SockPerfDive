@@ -1,6 +1,7 @@
 import os.path
 import sys
 import csv
+import multiprocessing.pool as Workers
 
 LATENCY_DATA_HEADER = 'tx,inner,net'
 IN_LATENCY_DATA_HEADER = 'inner'
@@ -16,7 +17,10 @@ NETWORK_LATENCY_MAP_HEADER = 'latency,count'
 USAGE = 'python generate_latency_map.py data_in_file inner_latency_out_file network_latency_out_file'
 
 
-def transfer_latency_to_map(source, inner_latency_file, network_latency_file):
+def transfer_latency_to_map(task):
+    source = task[0]
+    inner_latency_file = task[1]
+    network_latency_file = task[2]
     in_lat_map = dict()
     net_lat_map = dict()
     with open(source, 'rb') as infile:
@@ -51,16 +55,21 @@ def main():
 
     source_file = os.path.normpath(source_file)
     inner_latency_file = os.path.normpath(inner_latency_file)
+    tasks = []
     if os.path.isfile(source_file):
-        transfer_latency_to_map(source_file, inner_latency_file, network_latency_file)
+        tasks = [[source_file, inner_latency_file, network_latency_file]]
     else:
+
         filenames = os.listdir(source_file)
         for filename in filenames:
             source = os.path.join(source_file, filename)
             target_in = os.path.join(inner_latency_file, filename)
             target_net = os.path.join(network_latency_file, filename)
-            transfer_latency_to_map(source, target_in, target_net)
-
+            tasks.append([source, target_in, target_net])
+    works = Workers(5)
+    works.map(transfer_latency_to_map, tasks)
+    works.close()
+    works.join()
 
 if __name__ == '__main__':
     main()

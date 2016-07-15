@@ -1,7 +1,7 @@
 import os
 import os.path
-import re
 import sys
+import multiprocessing.pool as Workers
 import result_parsor
 
 
@@ -20,12 +20,13 @@ def save_result_to_file(result, target):
     f.close()
 
 
-def transfer_result_from_file(source, target):
+def transfer_result_from_file(task):
+    source = task[0]
+    target = task[1]
     with open(source) as infile, open(target, 'w') as outfile:
         summary = []
         for line_index in range(SOCKPERF_LOG_SUMMARY_LINE_NUMBER):
             summary.append(infile.readline().rstrip())
-
 
         # output file has header line
         outfile.write('tx,inner,net\n')
@@ -53,15 +54,24 @@ def main():
     target_file = sys.argv[2]
     if os.path.isdir(source_file):
         filenames = os.listdir(source_file)
+        if not os.path.exists(target_file):
+            os.makedirs(target_file, 0777)
     else:
         filenames = [source_file]
+
+    tasks = []
     for filename in filenames:
         (basename, extname) = os.path.splitext(filename)
         if extname.upper() != '.CSV':
             continue
         source_name = os.path.join(source_file, filename)
         target_name = os.path.join(target_file, filename)
-        transfer_result_from_file(source_name, target_name)
+        tasks.append([source_name, target_name])
+
+    works = Workers(5)
+    works.map(transfer_result_from_file, tasks)
+    works.close()
+    works.join()
 
 
 if __name__ == '__main__':
