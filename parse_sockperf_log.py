@@ -67,7 +67,7 @@ def main():
         target_name = os.path.join(target_file, filename)
         tasks.append([source_name, target_name])
 
-    works = Workers(5)
+    works = Workers(10)
     works.map(transfer_result_from_file, tasks)
     works.close()
     works.join()

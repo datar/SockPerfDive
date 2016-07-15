@@ -59,17 +59,21 @@ def main():
     if os.path.isfile(source_file):
         tasks = [[source_file, inner_latency_file, network_latency_file]]
     else:
-
+        if not os.path.exists(inner_latency_file):
+            os.makedirs(inner_latency_file)
+        if not os.path.exists(network_latency_file):
+            os.makedirs(network_latency_file)
         filenames = os.listdir(source_file)
         for filename in filenames:
             source = os.path.join(source_file, filename)
             target_in = os.path.join(inner_latency_file, filename)
             target_net = os.path.join(network_latency_file, filename)
             tasks.append([source, target_in, target_net])
-    works = Workers(5)
+    works = Workers(10)
     works.map(transfer_latency_to_map, tasks)
     works.close()
     works.join()
+
 
 if __name__ == '__main__':
     main()
