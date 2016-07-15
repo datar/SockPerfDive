@@ -1,7 +1,7 @@
 import os
 import os.path
 import sys
-import multiprocessing.Pool as Workers
+from multiprocessing import Pool as Workers
 
 
 BEGIN_TEXT_OF_DATA = 'txTime, rxTime'

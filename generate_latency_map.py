@@ -1,7 +1,7 @@
 import os.path
 import sys
 import csv
-import multiprocessing.Pool as Workers
+from multiprocessing import Pool as Workers
 
 LATENCY_DATA_HEADER = 'tx,inner,net'
 IN_LATENCY_DATA_HEADER = 'inner'
